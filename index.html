@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VLAD DEGENEV — $VLAD</title>
+<meta name="description" content="Money falls off the chain all day. Vlad stands under it with his hood open and keeps whatever lands.">
+<meta property="og:title" content="VLAD DEGENEV — he does not trade, he loots">
+<meta property="og:description" content="Every meme coin trade shakes something loose. It falls. He is the somewhere it lands.">
+<meta property="og:image" content="assets/ava.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lime:#84F920; --lime-d:#6FD914; --ink:#0B1005; --mint:#3CE98C;
+  --paper:#F6FFE9; --red:#FF3B30; --w:#fff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--lime); color:var(--ink);
+  font-family:"DM Sans",system-ui,sans-serif; font-size:16px; line-height:1.5;
+  overflow-x:clip; -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+.wrap{width:min(1180px,100% - 40px); margin-inline:auto}
+.mono{font-family:"DM Mono",ui-monospace,monospace}
+
+/* ---------- top bar ---------- */
+#top{
+  position:fixed; top:0; left:0; right:0; z-index:90;
+  display:flex; align-items:center; gap:10px;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;
+  background:var(--ink); color:var(--lime);
+}
+#top .tk{font-family:"Anton",sans-serif; letter-spacing:.06em; font-size:18px}
+#top .sp{flex:1}
+.hud{
+  font-family:"DM Mono",monospace; font-size:11px; letter-spacing:.08em;
+  border:1px solid #ffffff44; background:#ffffff12; color:var(--lime);
+  padding:6px 9px; cursor:pointer; text-transform:uppercase;
+}
+.hud:hover{background:var(--lime); color:var(--ink)}
+.hud.off{opacity:.55}
+
+/* ---------- hero ---------- */
+#hero{padding:92px 0 0; position:relative; overflow:hidden}
+.hero-r{padding-top:6px}
+.hero-in{
+  display:grid; grid-template-columns:1.05fr .95fr; gap:26px; align-items:center;
+  min-height:calc(100svh - 92px); padding-bottom:26px;
+}
+.kick{
+  font-family:"DM Mono",monospace; font-size:12px; letter-spacing:.22em;
+  text-transform:uppercase; display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  margin:0 0 14px;
+}
+.kick b{background:var(--ink); color:var(--lime); padding:5px 9px; font-weight:500}
+.kick span{border:1.5px solid var(--ink); padding:4px 9px}
+h1.mark{
+  font-family:"Anton",sans-serif; font-weight:400; margin:0;
+  font-size:clamp(52px,10.4vw,142px); line-height:.84; letter-spacing:-.01em;
+  text-transform:uppercase;
+  text-shadow:5px 5px 0 var(--mint), 10px 10px 0 #ffffffaa;
+}
+.tagline{
+  font-family:"Anton",sans-serif; text-transform:lowercase;
+  font-size:clamp(20px,2.7vw,34px); line-height:1.06; margin:20px 0 0; max-width:19ch;
+}
+.tagline em{font-style:normal; background:var(--ink); color:var(--lime); padding:0 .16em; display:inline-block}
+.lore{max-width:46ch; margin:16px 0 0; font-size:15.5px}
+.lore p{margin:0 0 10px}
+.cta{display:flex; flex-wrap:wrap; gap:10px; margin:20px 0 0; align-items:center}
+.btn{
+  font-family:"Anton",sans-serif; text-transform:uppercase; letter-spacing:.04em;
+  font-size:17px; text-decoration:none; padding:13px 20px;
+  border:2.5px solid var(--ink); background:var(--w); color:var(--ink);
+  box-shadow:0 5px 0 var(--ink); cursor:pointer; display:inline-block;
+}
+.btn:active{transform:translateY(3px); box-shadow:0 2px 0 var(--ink)}
+.btn.dark{background:var(--ink); color:var(--lime)}
+.btn.soon{opacity:.45; cursor:not-allowed}
+.btn.soon:after{content:" · soon"; font-size:12px; opacity:.8}
+#caBox{
+  display:inline-flex; gap:8px; align-items:center; cursor:pointer;
+  font-family:"DM Mono",monospace; font-size:12px; letter-spacing:.06em;
+  border:1.5px dashed var(--ink); padding:9px 12px; background:#ffffff66;
+}
+#caBox b{font-weight:500}
+.hero-r{position:relative; display:flex; justify-content:center; align-items:flex-end; min-width:0}
+#stage{position:relative; width:100%; max-width:min(470px,49vh); padding:42px 0 0}
+#dropfx{position:absolute; inset:-10% -12% 0; pointer-events:none; z-index:3; overflow:hidden}
+#heroCanvas{position:absolute; left:-14%; right:-14%; top:0; bottom:64px; width:128%; height:calc(100% - 64px); z-index:0; pointer-events:none}
+#vlad{
+  position:relative; z-index:2; width:100%; cursor:pointer;
+  filter:drop-shadow(0 16px 0 rgba(11,16,5,.16));
+  animation:bob 2.4s ease-in-out infinite alternate;
+  transform-origin:50% 100%;
+}
+#vlad:active{animation:none; transform:scale(1.04,.94)}
+@keyframes bob{to{transform:translateY(-9px) rotate(1.2deg)}}
+.ground{height:7px; background:var(--ink); margin:-4px 6% 0; position:relative; z-index:1}
+.poke{
+  position:absolute; z-index:4; top:2px; left:0;
+  font-family:"DM Mono",monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  background:var(--ink); color:var(--lime); padding:7px 10px; transform:rotate(-7deg);
+  pointer-events:none; white-space:nowrap;
+}
+.playSticker{
+  display:inline-block; margin:16px auto 0; z-index:5; position:relative;
+  font-family:"Anton",sans-serif; font-size:19px; text-transform:uppercase; letter-spacing:.03em;
+  background:var(--mint); color:var(--ink); border:2.5px solid var(--ink);
+  padding:12px 18px; transform:rotate(-1.6deg); text-decoration:none; text-align:center;
+  box-shadow:5px 5px 0 rgba(11,16,5,.5); cursor:pointer;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+.playSticker small{display:block; font-family:"DM Mono",monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; opacity:.8}
+@keyframes pulse{50%{box-shadow:5px 5px 0 rgba(11,16,5,.5), 0 0 0 9px rgba(11,16,5,.12)}}
+.coin{
+  position:absolute; width:26px; height:26px; border-radius:50%;
+  background:var(--mint); border:2.5px solid var(--ink); z-index:6;
+  font:700 13px/21px "DM Sans",sans-serif; text-align:center; color:var(--ink);
+}
+.coin.bill{border-radius:3px; width:34px; height:20px; background:#EAFBD0; line-height:15px; font-size:11px}
+
+/* ---------- marquee ---------- */
+.mq{background:var(--ink); color:var(--lime); overflow:hidden; padding:11px 0; border-block:3px solid var(--ink)}
+.mq div{display:inline-block; white-space:nowrap; animation:mqa 34s linear infinite;
+  font-family:"DM Mono",monospace; font-size:12.5px; letter-spacing:.2em; text-transform:uppercase}
+.mq b{color:var(--mint); font-weight:500; margin:0 6px}
+@keyframes mqa{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- sections ---------- */
+section{padding:64px 0}
+.sec-h{display:flex; align-items:flex-end; gap:16px; flex-wrap:wrap; margin:0 0 8px}
+.sec-h h2{font-family:"Anton",sans-serif; font-weight:400; font-size:clamp(34px,5.4vw,66px); line-height:.9; margin:0; text-transform:uppercase}
+.sec-h .n{font-family:"DM Mono",monospace; font-size:12px; letter-spacing:.18em; opacity:.6; padding-bottom:6px}
+.sec-sub{max-width:52ch; margin:10px 0 28px; font-size:15.5px}
+
+#game{background:var(--paper)}
+.gwrap{display:grid; grid-template-columns:1.25fr .75fr; gap:18px; align-items:start}
+.panel{border:3px solid var(--ink); background:var(--w); min-width:0}
+#cvWrap{position:relative; background:var(--lime)}
+#cv{display:block; width:100%; aspect-ratio:5/4.9; touch-action:none; cursor:none}
+#cvOver{
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:12px; background:rgba(11,16,5,.82); color:var(--lime); text-align:center; padding:22px; z-index:4;
+}
+#cvOver h3{font-family:"Anton",sans-serif; font-weight:400; font-size:clamp(28px,4.4vw,46px); margin:0; text-transform:uppercase; line-height:.92}
+#cvOver p{max-width:34ch; margin:0; font-size:14.5px; opacity:.92}
+#cvOver.hide{display:none}
+.stats{display:grid; grid-template-columns:repeat(3,1fr); border-bottom:3px solid var(--ink)}
+.stat{padding:10px 12px; border-right:3px solid var(--ink)}
+.stat:last-child{border-right:0}
+.stat i{display:block; font-family:"DM Mono",monospace; font-style:normal; font-size:10px; letter-spacing:.16em; text-transform:uppercase; opacity:.6}
+.stat b{font-family:"Anton",sans-serif; font-weight:400; font-size:26px; line-height:1.1}
+.barwrap{padding:12px; border-bottom:3px solid var(--ink)}
+.barlbl{display:flex; justify-content:space-between; font-family:"DM Mono",monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:7px}
+.bar{height:16px; border:2.5px solid var(--ink); background:var(--w)}
+.bar i{display:block; height:100%; width:0; background:var(--mint); transition:width .18s}
+.manifest{padding:12px; display:grid; gap:6px; border-bottom:3px solid var(--ink)}
+.manifest div{display:flex; gap:9px; font-family:"DM Mono",monospace; font-size:11.5px; letter-spacing:.04em; opacity:.35; text-transform:uppercase}
+.manifest div.on{opacity:1}
+.manifest div.on s{text-decoration:none}
+.manifest em{font-style:normal; width:1.4em; flex:none}
+#log{height:172px; overflow:auto; padding:10px 12px; font-family:"DM Mono",monospace; font-size:11.5px; line-height:1.72}
+#log p{margin:0; opacity:.85}
+#log p.good{color:#1E8E3E}
+#log p.bad{color:var(--red)}
+.gbtns{display:flex; gap:8px; padding:12px; border-top:3px solid var(--ink); flex-wrap:wrap}
+.gbtn{font-family:"Anton",sans-serif; font-size:15px; text-transform:uppercase; border:2.5px solid var(--ink);
+  background:var(--w); padding:9px 14px; cursor:pointer; box-shadow:0 4px 0 var(--ink)}
+.gbtn:active{transform:translateY(2px); box-shadow:0 2px 0 var(--ink)}
+.gbtn.p{background:var(--mint)}
+.hint{font-family:"DM Mono",monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; opacity:.55; padding:0 12px 12px}
+
+/* ---------- cards ---------- */
+.cards{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+.card{
+  border:3px solid var(--ink); background:var(--w); padding:16px; min-width:0;
+  display:flex; flex-direction:column; gap:8px; position:relative;
+}
+.card .g{font-family:"Anton",sans-serif; font-size:40px; line-height:.9; color:var(--mint); -webkit-text-stroke:2px var(--ink)}
+.card h3{font-family:"Anton",sans-serif; font-weight:400; font-size:19px; margin:0; text-transform:uppercase; line-height:1.02}
+.card p{margin:0; font-size:14px}
+.card .tag{position:absolute; top:-3px; right:-3px; background:var(--ink); color:var(--lime);
+  font-family:"DM Mono",monospace; font-size:10px; letter-spacing:.12em; padding:4px 7px}
+.card.locked{background:#ffffff55; border-style:dashed}
+.card.locked .g,.card.locked h3,.card.locked p{filter:blur(5px); opacity:.5; user-select:none}
+.card.locked:after{
+  content:"LOCKED · FILL BAG"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-family:"DM Mono",monospace; font-size:11px; letter-spacing:.16em;
+}
+
+/* ---------- split ---------- */
+#split{background:var(--ink); color:var(--paper)}
+#split .sec-h h2{color:var(--lime)}
+#split .sec-sub{opacity:.75}
+.specs{display:grid; grid-template-columns:repeat(2,1fr); gap:0; border:3px solid var(--lime)}
+.spec{padding:20px; border-right:3px solid var(--lime); border-bottom:3px solid var(--lime)}
+.spec:nth-child(2n){border-right:0}
+.spec:nth-child(n+3){border-bottom:0}
+.spec i{font-style:normal; font-family:"DM Mono",monospace; font-size:11px; letter-spacing:.18em; color:var(--mint); text-transform:uppercase}
+.spec h3{font-family:"Anton",sans-serif; font-weight:400; font-size:30px; margin:6px 0 8px; color:var(--lime); text-transform:uppercase}
+.spec p{margin:0; font-size:14.5px; opacity:.82}
+
+/* ---------- footer ---------- */
+footer{background:var(--ink); color:var(--lime); padding:0 0 calc(34px + env(safe-area-inset-bottom,0px))}
+.foot{display:flex; align-items:center; gap:20px; flex-wrap:wrap; border-top:3px solid var(--lime); padding-top:26px}
+.foot img{width:96px; flex:none}
+.foot .fm{font-family:"Anton",sans-serif; font-size:clamp(28px,4vw,46px); text-transform:uppercase; line-height:.9}
+.foot small{font-family:"DM Mono",monospace; font-size:11px; letter-spacing:.14em; opacity:.6; display:block; margin-top:8px}
+.foot .lk{margin-left:auto; display:flex; gap:10px}
+
+/* ---------- win ---------- */
+#rain{position:fixed; inset:0; pointer-events:none; z-index:140; overflow:hidden}
+#win{
+  position:fixed; inset:0; z-index:150; display:none; align-items:center; justify-content:center;
+  background:rgba(11,16,5,.88); padding:20px;
+}
+#win.on{display:flex}
+#win .box{
+  background:var(--lime); border:4px solid var(--ink); max-width:540px; width:100%; padding:26px; text-align:center;
+  box-shadow:12px 12px 0 rgba(0,0,0,.45);
+}
+#win img{width:150px; margin:0 auto 10px}
+#win h3{font-family:"Anton",sans-serif; font-weight:400; font-size:clamp(30px,6vw,52px); margin:0 0 8px; text-transform:uppercase; line-height:.92}
+#win p{margin:0 0 16px; font-size:15px}
+.grain{position:fixed; inset:0; z-index:120; pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.5) .5px,transparent .6px); background-size:3px 3px;
+  mix-blend-mode:overlay; opacity:.12}
+
+@media (min-width:1001px) and (max-height:800px){
+  h1.mark{font-size:clamp(42px,6.1vw,88px); text-shadow:4px 4px 0 var(--mint), 8px 8px 0 #ffffffaa}
+  .tagline{font-size:clamp(17px,1.8vw,23px); margin-top:11px}
+  .lore{font-size:14px; margin-top:10px} .lore p{margin-bottom:7px}
+  .cta{margin-top:13px} .kick{margin-bottom:9px} .kick{font-size:11px}
+  .btn{font-size:15px; padding:11px 16px}
+  #hero{padding-top:80px} .hero-in{min-height:calc(100svh - 80px)}
+  .playSticker{font-size:17px; padding:10px 14px; margin-top:12px}
+}
+@media (max-width:1000px){
+  .hero-in{grid-template-columns:1fr; gap:10px; min-height:0}
+  .hero-in>div:last-child{order:-1}
+  #stage{max-width:330px; margin-inline:auto}
+  #vlad{max-height:290px; width:auto; margin-inline:auto}
+  #hero{padding-top:84px}
+  .gwrap{grid-template-columns:1fr}
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .specs{grid-template-columns:1fr}
+  .spec{border-right:0!important; border-bottom:3px solid var(--lime)!important}
+  .spec:last-child{border-bottom:0!important}
+}
+@media (max-width:620px){ #shiftHud{display:none} }
+@media (max-width:560px){
+  .cards{grid-template-columns:1fr}
+  section{padding:46px 0}
+  .poke{left:0; top:0}
+  h1.mark{text-shadow:3px 3px 0 var(--mint), 6px 6px 0 #ffffffaa}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div id="rain"></div>
+
+<header id="top">
+  <span class="tk">$VLAD</span>
+  <span class="hud mono" id="shiftHud">SHIFT 14 · STANDING</span>
+  <span class="sp"></span>
+  <button class="hud" id="sfxBtn">SOUND: ON</button>
+  <button class="hud off" id="musBtn">MUSIC: OFF</button>
+</header>
+
+<section id="hero">
+  <div class="wrap hero-in">
+    <div>
+      <div class="kick"><b>$VLAD</b><span>robinhood chain</span><span>he does not trade. he loots.</span></div>
+      <h1 class="mark">VLAD<br>DEGENEV</h1>
+      <p class="tagline">money falls off the chain all day. <em>i stand under it.</em></p>
+      <div class="lore">
+        <p>people up there trade meme coins from the moment they wake up, and every single trade shakes something loose — a fee, a bit of dust, a token that nobody wanted by tuesday. it falls off the edge. it has to land somewhere.</p>
+        <p>i am the somewhere. i do not chart, i do not have a thesis, i have never once been early. i stand under the chain with my hood open, i keep whatever hits me, and everything that lands in the bag gets shared out with everyone holding $VLAD.</p>
+      </div>
+      <div class="cta">
+        <a class="btn dark soon" id="buyBtn" href="#">BUY $VLAD</a>
+        <a class="btn" id="xBtn" href="#" target="_blank" rel="noopener">X / TWITTER</a>
+        <div id="caBox" class="mono">CA <b class="ca-val">not live yet</b></div>
+      </div>
+    </div>
+    <div class="hero-r">
+      <div id="stage" style="text-align:center">
+        <canvas id="heroCanvas"></canvas>
+        <span class="poke">poke him · he pays</span>
+        <img id="vlad" src="assets/cut-full.webp" alt="vlad degenev standing under the chain with his hood open, waiting for something to fall on him">
+        <div class="ground"></div>
+        <a class="playSticker" href="#game" id="playSticker">▶ PLAY THE DROP<small>catch it before it hits the floor</small></a>
+        <div id="dropfx"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="mq"><div id="mqIn"></div></div>
+
+<section id="game">
+  <div class="wrap">
+    <div class="sec-h"><h2>THE DROP</h2><span class="n">MINI-GAME · 8 BAGS TO FILL</span></div>
+    <p class="sec-sub">move him left and right, that is the whole skill ceiling. green is money, mint is a token, red is somebody rugging a chart directly onto your head — catch a red one and the bag spills.</p>
+    <div class="gwrap">
+      <div class="panel" id="cvWrap">
+        <canvas id="cv"></canvas>
+        <div id="cvOver">
+          <h3>STAND UNDER IT</h3>
+          <p>drag or move the mouse to walk him. arrow keys work too. fill eight bags and he goes home early.</p>
+          <button class="gbtn p" id="startBtn">START THE SHIFT</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="stats">
+          <div class="stat"><i>bag</i><b id="sBag">1/8</b></div>
+          <div class="stat"><i>caught</i><b id="sCaught">0</b></div>
+          <div class="stat"><i>spilled</i><b id="sSpill">0</b></div>
+        </div>
+        <div class="barwrap">
+          <div class="barlbl"><span id="bagName">bag 01 · trading fees</span><span id="bagPct">0/8</span></div>
+          <div class="bar"><i id="bagFill"></i></div>
+        </div>
+        <div class="manifest" id="manifest"></div>
+        <div id="log"><p>shift not started. he is just standing there.</p></div>
+        <div class="gbtns">
+          <button class="gbtn p" id="goBtn">START</button>
+          <button class="gbtn" id="resetBtn">RESET</button>
+        </div>
+        <div class="hint">tip · he never runs. he shuffles. plan accordingly.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="loot">
+  <div class="wrap">
+    <div class="sec-h"><h2>WHAT HE CAUGHT</h2><span class="n">8 BAGS · UNLOCK BY PLAYING</span></div>
+    <p class="sec-sub">the inventory of one full shift, in the order it fell on him.</p>
+    <div class="cards" id="cards">
+
+      <div class="card locked" data-i="0"><span class="tag">BAG 01</span>
+        <span class="g">¢</span><h3>Trading fees</h3>
+        <p>every buy and every sell leaves a few cents somewhere on the floor up there, and nobody with a real portfolio bends down for cents. i bend down for cents. that is the entire job description, written out in full.</p></div>
+
+      <div class="card locked" data-i="1"><span class="tag">BAG 02</span>
+        <span class="g">✦</span><h3>Dead tokens</h3>
+        <p>somebody launched a dog wearing a hat at three in the morning and had abandoned it by breakfast. the token still falls, it still weighs something on the way down, and it goes in the bag with everything else.</p></div>
+
+      <div class="card locked" data-i="2"><span class="tag">BAG 03</span>
+        <span class="g">▼</span><h3>Panic sells</h3>
+        <p>when the candle turns red the whole floor empties at once and a good half of it rains down on my head. i do not enjoy this part. i do collect this part, thoroughly, with both hands.</p></div>
+
+      <div class="card locked" data-i="3"><span class="tag">BAG 04</span>
+        <span class="g">…</span><h3>Rounding dust</h3>
+        <p>there is always a fraction left over that does not fit in anybody's wallet and just sits there being too small to care about. i care about it. i am built for exactly this size of money and no larger.</p></div>
+
+      <div class="card locked" data-i="4"><span class="tag">BAG 05</span>
+        <span class="g">◷</span><h3>Orders that never filled</h3>
+        <p>a man set a buy at a price the market laughed at out loud, then went to bed and stayed there. that order has been hanging above me for nine months. one day it drops, and i am still standing in the same spot.</p></div>
+
+      <div class="card locked" data-i="5"><span class="tag">BAG 06</span>
+        <span class="g">☾</span><h3>The 4am candle</h3>
+        <p>nothing good has ever been traded at four in the morning, which is precisely why so much of it comes off the edge. i do not sleep on a schedule. i sleep in short shifts between drops, standing up.</p></div>
+
+      <div class="card locked" data-i="6"><span class="tag">BAG 07</span>
+        <span class="g">⇩</span><h3>Somebody's exit liquidity</h3>
+        <p>a man sold his entire bag into a wall, and on that particular afternoon the wall was me. i did not apply to be the wall and nobody asked. the wall got paid, so no complaint has been filed.</p></div>
+
+      <div class="card locked" data-i="7"><span class="tag">BAG 08</span>
+        <span class="g">$</span><h3>A whole coin, intact</h3>
+        <p>once in a while something comes down that is not dust, not a fee and not a fragment — an actual full coin with the paint still on it. on those days i go home early. today is one of those days.</p></div>
+
+    </div>
+  </div>
+</section>
+
+<section id="split">
+  <div class="wrap">
+    <div class="sec-h"><h2>THE SPLIT</h2><span class="n">WHERE THE BAG GOES</span></div>
+    <p class="sec-sub">four things, and then he goes back outside to stand under the chain.</p>
+    <div class="specs">
+      <div class="spec"><i>supply</i><h3>1,000,000,000</h3>
+        <p>one billion, minted once, all of it in the open. there is no second batch in a drawer somewhere. i am bad at a great number of things, but i can count to one and then stop.</p></div>
+      <div class="spec"><i>liquidity</i><h3>burned</h3>
+        <p>the key to the pool went into the same fire as everything else i could not carry home. nobody opens it again. that includes me, and honestly it mostly means me.</p></div>
+      <div class="spec"><i>tax</i><h3>0%</h3>
+        <p>i take nothing out of your trade. i take what the chain already dropped on the floor on its way past. charging you twice for the same fall would be rude, and i am not rude, i am just standing here.</p></div>
+      <div class="spec"><i>authority</i><h3>revoked</h3>
+        <p>mint and freeze are both gone, signed away on day one. the only thing i am still authorized to do is stand outside with my hood open and my eyes fully, permanently, open.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <img src="assets/cut-head.webp" alt="vlad looking up at the chain, waiting for the next thing to come off the edge">
+    <div>
+      <div class="fm">STAND<br>UNDER IT</div>
+      <small id="footStat">shift 14 · net 0.00 since march · still standing</small>
+    </div>
+    <div class="lk">
+      <a class="btn dark soon" href="#" id="buyBtn2">BUY $VLAD</a>
+      <a class="btn xLink" href="#" target="_blank" rel="noopener">X</a>
+    </div>
+  </div>
+</footer>
+
+<div id="win"><div class="box">
+  <img src="assets/cut-head.webp" alt="vlad with eight full bags, going home early for once">
+  <h3>EIGHT BAGS FULL</h3>
+  <p id="winTxt">that is the whole shift. he did not trade once, he did not look at a chart once, and he is still walking home heavier than everybody who did.</p>
+  <button class="gbtn p" id="winClose">GO HOME</button>
+</div></div>
+
+<script>
+/* ============ SETTINGS ============ */
+window.CONTRACT = "";      /* адрес контракта */
+window.TWITTER  = "";      /* ссылка на X */
+window.BUY_URL  = "";      /* ссылка на покупку */
+/* ================================== */
+
+var CA=(window.CONTRACT||"").trim(), TW=(window.TWITTER||"").trim(), BUY=(window.BUY_URL||"").trim();
+if(CA){
+  document.querySelectorAll(".ca-val").forEach(function(e){ e.textContent=CA.slice(0,6)+"…"+CA.slice(-4); });
+  document.getElementById("caBox").addEventListener("click",function(){
+    var b=this.querySelector("b"), old=b.textContent;
+    navigator.clipboard.writeText(CA).then(function(){ b.textContent="copied"; setTimeout(function(){ b.textContent=old; },1200); });
+  });
+}
+if(TW){ document.querySelectorAll("#xBtn,.xLink").forEach(function(a){ a.href=TW; }); }
+["buyBtn","buyBtn2"].forEach(function(id){
+  var buy=document.getElementById(id); if(!buy) return;
+  if(BUY){ buy.href=BUY; buy.target="_blank"; buy.rel="noopener"; buy.classList.remove("soon"); }
+  else{ buy.addEventListener("click",function(e){ e.preventDefault(); }); }
+});
+
+/* ============ audio ============ */
+var AC=null, sfxOn=true, vol=1;
+function ac(){ try{ if(!AC){ var C=window.AudioContext||window.webkitAudioContext; if(!C) return null; AC=new C(); } if(AC.state==="suspended") AC.resume(); return AC; }catch(e){ return null; } }
+function tone(f1,f2,dur,type,g){
+  if(!sfxOn) return; var c=ac(); if(!c) return;
+  var o=c.createOscillator(), gg=c.createGain(), t=c.currentTime;
+  o.type=type||"sine"; o.frequency.setValueAtTime(f1,t);
+  if(f2&&f2!==f1) o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  gg.gain.setValueAtTime(.0001,t); gg.gain.exponentialRampToValueAtTime((g||.06)*vol,t+.012);
+  gg.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(gg); gg.connect(c.destination); o.start(t); o.stop(t+dur+.05);
+}
+function sCash(){ tone(760,1240,.09,"triangle",.05); }
+function sToken(){ tone(560,980,.07,"square",.035); setTimeout(function(){ tone(980,1560,.09,"square",.03); },60); }
+function sBad(){ tone(190,62,.28,"sawtooth",.06); }
+function sBag(){ [523,659,784,1046].forEach(function(f,i){ setTimeout(function(){ tone(f,f,.16,"triangle",.045); }, i*75); }); }
+function sWin(){ [523,659,784,1046,1318,1568].forEach(function(f,i){ setTimeout(function(){ tone(f,f*1.005,.24,"triangle",.05); }, i*110); }); }
+
+/* music: market-floor marimba, bright pentatonic 4/4 with a shaker and an opening-bell hit */
+var STEP=.1666;
+var MEL=[587,880,784,880, 659,988,880,784, 587,784,880,1046, 988,880,784,659];
+var BAS=[146.8,0,146.8,0, 164.8,0,164.8,0, 196,0,196,0, 110,0,164.8,0];
+var MU={on:false,t:null,step:0,next:0};
+function mnote(f,at,dur,type,g,lp){
+  var c=ac(); if(!c||!f) return;
+  var o=c.createOscillator(), gg=c.createGain(), fl=c.createBiquadFilter();
+  fl.type="lowpass"; fl.frequency.value=lp||2400;
+  o.type=type; o.frequency.setValueAtTime(f,at);
+  gg.gain.setValueAtTime(.0001,at); gg.gain.exponentialRampToValueAtTime(g,at+.012);
+  gg.gain.exponentialRampToValueAtTime(.0001,at+dur);
+  o.connect(fl); fl.connect(gg); gg.connect(c.destination); o.start(at); o.stop(at+dur+.05);
+}
+function shaker(at,g){
+  var c=ac(); if(!c) return;
+  var n=c.createBufferSource(), b=c.createBuffer(1,1100,c.sampleRate), d=b.getChannelData(0);
+  for(var i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
+  n.buffer=b; var hp=c.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=5200;
+  var gg=c.createGain(); gg.gain.setValueAtTime(g,at); gg.gain.exponentialRampToValueAtTime(.0001,at+.07);
+  n.connect(hp); hp.connect(gg); gg.connect(c.destination); n.start(at); n.stop(at+.1);
+}
+function musSchedule(){
+  var c=ac(); if(!c) return;
+  while(MU.next < c.currentTime+.5){
+    var i=MU.step%16, at=Math.max(MU.next,c.currentTime+.02);
+    mnote(MEL[i],at,.34,"triangle",.035,2800);
+    if(BAS[i]) mnote(BAS[i],at,.3,"sine",.075,700);
+    if(i%2===1) shaker(at,.022);
+    if(MU.step%64===0){ mnote(1318,at,1.4,"sine",.05,5000); mnote(1976,at,1.2,"sine",.025,5000); }
+    MU.next+=STEP; MU.step++;
+  }
+}
+function musToggle(on){
+  var btn=document.getElementById("musBtn");
+  MU.on=on;
+  if(on){ var c=ac(); if(!c){ MU.on=false; return; } MU.next=c.currentTime+.1; if(!MU.t) MU.t=setInterval(musSchedule,90); btn.textContent="MUSIC: ON"; btn.classList.remove("off"); }
+  else{ if(MU.t){ clearInterval(MU.t); MU.t=null; } btn.textContent="MUSIC: OFF"; btn.classList.add("off"); }
+}
+document.getElementById("musBtn").addEventListener("click",function(){ musToggle(!MU.on); });
+document.getElementById("sfxBtn").addEventListener("click",function(){
+  sfxOn=!sfxOn; this.textContent="SOUND: "+(sfxOn?"ON":"OFF"); this.classList.toggle("off",!sfxOn);
+  if(sfxOn) sCash();
+});
+document.addEventListener("visibilitychange",function(){
+  if(document.hidden&&MU.on&&MU.t){ clearInterval(MU.t); MU.t=null; }
+  else if(!document.hidden&&MU.on&&!MU.t){ var c=ac(); if(c){ MU.next=c.currentTime+.1; MU.t=setInterval(musSchedule,90); } }
+});
+/* music starts on first interaction, but not when the user is pressing the audio buttons */
+(function(){
+  var armed=true;
+  function first(e){
+    if(!armed) return;
+    if(e.target&&e.target.closest&&e.target.closest("#sfxBtn,#musBtn")) return;
+    armed=false; musToggle(true);
+    ["pointerdown","keydown","touchstart","wheel"].forEach(function(t){ document.removeEventListener(t,first,true); });
+  }
+  ["pointerdown","keydown","touchstart","wheel"].forEach(function(t){ document.addEventListener(t,first,true); });
+})();
+
+/* ============ marquee ============ */
+(function(){
+  var lines=["hood open since block zero","cents are money too","he is not down there by accident",
+    "do not throw things at him. do throw money at him","shift 14 · still standing","the floor is his desk",
+    "never early, never gone","whatever comes off the edge lands on him"];
+  var one=lines.map(function(s){ return s+" <b>◆</b> "; }).join("");
+  document.getElementById("mqIn").innerHTML=one+one;
+})();
+
+/* ============ hero: falling stuff behind him + poke payout ============ */
+(function(){
+  var cv=document.getElementById("heroCanvas"), st=cv;
+  if(!cv) return;
+  var x=cv.getContext("2d"), W=0,H=0,dpr=Math.min(2,window.devicePixelRatio||1), bits=[];
+  function size(){
+    var r=st.getBoundingClientRect(); W=r.width; H=r.height;
+    cv.width=Math.max(2,W*dpr); cv.height=Math.max(2,H*dpr); x.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener("resize",size); setTimeout(size,60); size();
+  function spawn(){
+    bits.push({x:Math.random()*W, y:-24, v:.7+Math.random()*1.5, r:Math.random()*Math.PI, vr:(Math.random()-.5)*.09,
+      t:Math.random()<.42?1:0, s:.72+Math.random()*.6});
+  }
+  var acc=0,last=0;
+  function loop(ts){
+    var dt=Math.min(40,ts-last||16); last=ts;
+    acc+=dt; if(acc>150){ acc=0; if(bits.length<40) spawn(); }
+    x.clearRect(0,0,W,H);
+    for(var i=bits.length-1;i>=0;i--){
+      var b=bits[i]; b.y+=b.v*dt*.062; b.r+=b.vr;
+      if(b.y>H+30){ bits.splice(i,1); continue; }
+      x.save(); x.translate(b.x,b.y); x.rotate(b.r); x.scale(b.s,b.s);
+      x.globalAlpha=.78; x.lineWidth=2.5; x.strokeStyle="#0B1005";
+      if(b.t){ x.fillStyle="#3CE98C"; x.beginPath(); x.arc(0,0,9,0,6.3); x.fill(); x.stroke(); }
+      else{ x.fillStyle="#EAFBD0"; x.fillRect(-13,-8,26,16); x.strokeRect(-13,-8,26,16);
+            x.fillStyle="#0B1005"; x.font="600 11px DM Sans, sans-serif"; x.textAlign="center"; x.fillText("$",0,4); }
+      x.restore();
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  var drop=document.getElementById("dropfx"), vlad=document.getElementById("vlad"), pokes=0;
+  function dropCoin(px,py,bill){
+    var d=document.createElement("div"); d.className="coin"+(bill?" bill":"");
+    d.textContent=bill?"$":"◆";
+    var Wd=drop.clientWidth||320, Hd=drop.clientHeight||320;
+    if(px===undefined){ px=Math.random()*Wd; py=-20; }
+    d.style.left=(px-13)+"px"; d.style.top=(py-13)+"px"; drop.appendChild(d);
+    var vx=(Math.random()-.5)*8, vy=-5-Math.random()*6, n=0, rot=(Math.random()-.5)*24, cx=px-13, cy=py-13;
+    (function stp(){
+      n++; vy+=.44; cx+=vx; cy+=vy;
+      d.style.transform="translate("+(cx-(px-13))+"px,"+(cy-(py-13))+"px) rotate("+(n*rot)+"deg)";
+      if(n>120||cy>Hd+340){ d.remove(); return; }
+      if(n>100) d.style.opacity=String(1-(n-100)/20);
+      requestAnimationFrame(stp);
+    })();
+  }
+  vlad.addEventListener("click",function(e){
+    var r=drop.getBoundingClientRect();
+    var px=e.clientX-r.left, py=e.clientY-r.top;
+    for(var i=0;i<9;i++) setTimeout(function(){ dropCoin(px+(Math.random()-.5)*70,py+(Math.random()-.5)*50,Math.random()<.5); }, i*36);
+    sCash(); pokes++;
+    var h=document.getElementById("shiftHud");
+    h.textContent="SHIFT 14 · PAID OUT "+pokes;
+  });
+})();
+
+/* ============ THE DROP — mini game ============ */
+(function(){
+  var cv=document.getElementById("cv"); if(!cv) return;
+  var x=cv.getContext("2d"), dpr=Math.min(2,window.devicePixelRatio||1), W=0,H=0;
+  var img=new Image(); img.src="assets/cut-full.webp"; var imgOk=false;
+  img.onload=function(){ imgOk=true; };
+  var BAGS=["trading fees","dead tokens","panic sells","rounding dust","orders never filled","the 4am candle","exit liquidity","a whole coin"];
+  var NEED=8;
+  var S={run:false,bag:0,fill:0,caught:0,spill:0,items:[],px:.5,tx:.5,t:0,acc:0,shake:0,won:false};
+
+  function size(){
+    var r=cv.getBoundingClientRect(); W=r.width; H=r.height;
+    cv.width=Math.max(2,W*dpr); cv.height=Math.max(2,H*dpr); x.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener("resize",size); setTimeout(size,80); size();
+
+  var mfEl=document.getElementById("manifest");
+  BAGS.forEach(function(n,i){ var d=document.createElement("div"); d.innerHTML="<em>"+String(i+1).padStart(2,"0")+"</em><s>"+n+"</s>"; mfEl.appendChild(d); });
+
+  function log(t,cls){
+    var l=document.getElementById("log"), p=document.createElement("p");
+    p.textContent=t; if(cls) p.className=cls; l.appendChild(p); l.scrollTop=l.scrollHeight;
+    while(l.children.length>60) l.removeChild(l.firstChild);
+  }
+  function ui(){
+    document.getElementById("sBag").textContent=Math.min(S.bag+1,8)+"/8";
+    document.getElementById("sCaught").textContent=S.caught;
+    document.getElementById("sSpill").textContent=S.spill;
+    document.getElementById("bagName").textContent="bag "+String(Math.min(S.bag+1,8)).padStart(2,"0")+" · "+BAGS[Math.min(S.bag,7)];
+    document.getElementById("bagPct").textContent=S.fill+"/"+NEED;
+    document.getElementById("bagFill").style.width=(S.fill/NEED*100)+"%";
+  }
+  function unlock(i){
+    var c=document.querySelector('.card[data-i="'+i+'"]'); if(c) c.classList.remove("locked");
+    var m=mfEl.children[i]; if(m) m.classList.add("on");
+  }
+
+  /* pointer / keys */
+  var keyL=false,keyR=false;
+  function pt(e){
+    var r=cv.getBoundingClientRect(), cx=(e.touches?e.touches[0].clientX:e.clientX);
+    S.tx=Math.max(.06,Math.min(.94,(cx-r.left)/r.width));
+  }
+  cv.addEventListener("pointermove",pt); cv.addEventListener("pointerdown",function(e){ cv.setPointerCapture&&cv.setPointerCapture(e.pointerId); pt(e); });
+  cv.addEventListener("touchmove",function(e){ e.preventDefault(); pt(e); },{passive:false});
+  document.addEventListener("keydown",function(e){
+    if(e.key==="ArrowLeft") keyL=true; if(e.key==="ArrowRight") keyR=true;
+    if(e.key==="ArrowLeft"||e.key==="ArrowRight") e.preventDefault();
+  });
+  document.addEventListener("keyup",function(e){ if(e.key==="ArrowLeft") keyL=false; if(e.key==="ArrowRight") keyR=false; });
+
+  function spawn(){
+    var speed=1+S.bag*.16;
+    var r=Math.random(), t= r<.11 ? 2 : (r<.42 ? 1 : 0);
+    S.items.push({x:.08+Math.random()*.84, y:-.06, v:(.28+Math.random()*.2)*speed, t:t, r:Math.random()*6.3, vr:(Math.random()-.5)*.1});
+  }
+
+  function catchIt(it){
+    if(it.t===2){
+      S.spill++; S.fill=Math.max(0,S.fill-2); S.shake=16; sBad();
+      log("a red one landed on him. the bag spilled.", "bad");
+    }else{
+      S.caught++; S.fill++;
+      if(it.t===1){ sToken(); log("token in the bag. it was worthless on arrival and it is still in the bag.","good"); }
+      else{ sCash(); log("fee caught mid-air. nobody up there noticed.","good"); }
+      if(S.fill>=NEED){
+        unlock(S.bag); sBag();
+        log("BAG "+String(S.bag+1).padStart(2,"0")+" FULL · "+BAGS[S.bag].toUpperCase());
+        S.bag++; S.fill=0;
+        if(S.bag>=8){ win(); }
+        else log("new bag opened. he did not sit down.");
+      }
+    }
+    ui();
+  }
+
+  function win(){
+    S.run=false; S.won=true;
+    document.getElementById("win").classList.add("on");
+    sWin(); rainCoins();
+    document.getElementById("footStat").textContent="shift 14 · 8 bags · went home early";
+    log("EIGHT BAGS. shift over.");
+  }
+
+  function drawGuy(gx,gy,gh){
+    if(imgOk){
+      var gw=gh*(img.width/img.height);
+      x.drawImage(img,gx-gw/2,gy-gh,gw,gh);
+    }else{
+      x.fillStyle="#0B1005"; x.fillRect(gx-22,gy-gh,44,gh);
+    }
+  }
+
+  var last=0;
+  function loop(ts){
+    var dt=Math.min(42,ts-last||16); last=ts;
+    if(S.run){
+      S.acc+=dt;
+      var rate=Math.max(210,470-S.bag*34);
+      if(S.acc>rate){ S.acc=0; spawn(); }
+      if(keyL) S.tx=Math.max(.06,S.tx-dt*.0016);
+      if(keyR) S.tx=Math.min(.94,S.tx+dt*.0016);
+      S.px+=(S.tx-S.px)*.14;
+      for(var i=S.items.length-1;i>=0;i--){
+        var it=S.items[i]; it.y+=it.v*dt*.00125; it.r+=it.vr;
+        var hitY=.80;
+        if(it.y>hitY && it.y<hitY+.14 && Math.abs(it.x-S.px)<.11){ S.items.splice(i,1); catchIt(it); continue; }
+        if(it.y>1.08){ S.items.splice(i,1); }
+      }
+    }
+    if(S.shake>0) S.shake-=dt*.06;
+
+    x.clearRect(0,0,W,H);
+    x.save();
+    if(S.shake>0) x.translate((Math.random()-.5)*S.shake*.5,(Math.random()-.5)*S.shake*.5);
+
+    /* the chain up top */
+    x.fillStyle="#0B1005"; x.fillRect(0,0,W,Math.max(14,H*.028));
+    x.fillStyle="#84F920"; x.font='500 10px "DM Mono", monospace'; x.textAlign="left";
+    x.fillText("ROBINHOOD CHAIN · TRADES SPILLING", 8, Math.max(14,H*.028)-4);
+
+    /* floor */
+    x.fillStyle="rgba(11,16,5,.14)"; x.fillRect(0,H*.945,W,H*.055);
+    x.fillStyle="#0B1005"; x.fillRect(0,H*.94,W,4);
+
+    /* items */
+    for(var j=0;j<S.items.length;j++){
+      var b=S.items[j];
+      x.save(); x.translate(b.x*W, b.y*H); x.rotate(b.r);
+      x.lineWidth=2.5; x.strokeStyle="#0B1005";
+      if(b.t===2){ x.fillStyle="#FF3B30"; x.fillRect(-15,-9,30,18); x.strokeRect(-15,-9,30,18);
+        x.fillStyle="#fff"; x.font='700 11px "DM Sans", sans-serif'; x.textAlign="center"; x.fillText("RUG",0,4); }
+      else if(b.t===1){ x.fillStyle="#3CE98C"; x.beginPath(); x.arc(0,0,12,0,6.3); x.fill(); x.stroke();
+        x.fillStyle="#0B1005"; x.font='700 12px "DM Sans", sans-serif'; x.textAlign="center"; x.fillText("◆",0,4); }
+      else{ x.fillStyle="#fff"; x.fillRect(-16,-10,32,20); x.strokeRect(-16,-10,32,20);
+        x.fillStyle="#0B1005"; x.font='700 12px "DM Sans", sans-serif'; x.textAlign="center"; x.fillText("$",0,5); }
+      x.restore();
+    }
+
+    /* guy */
+    var gh=Math.min(H*.30,150);
+    drawGuy(S.px*W, H*.945, gh);
+
+    /* bag meter above him */
+    var bw=64, bx=S.px*W-bw/2, by=H*.945-gh-16;
+    x.fillStyle="#fff"; x.strokeStyle="#0B1005"; x.lineWidth=2.5;
+    x.fillRect(bx,by,bw,9); x.strokeRect(bx,by,bw,9);
+    x.fillStyle="#3CE98C"; x.fillRect(bx+1.5,by+1.5,(bw-3)*(S.fill/NEED),6);
+
+    x.restore();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  function start(){
+    if(S.won) reset();
+    S.run=true;
+    document.getElementById("cvOver").classList.add("hide");
+    document.getElementById("goBtn").textContent="PAUSE";
+    log("shift started. hood open.");
+    ac();
+  }
+  function reset(){
+    S.run=false; S.bag=0; S.fill=0; S.caught=0; S.spill=0; S.items=[]; S.won=false;
+    document.querySelectorAll(".card").forEach(function(c){ c.classList.add("locked"); });
+    Array.prototype.forEach.call(mfEl.children,function(m){ m.classList.remove("on"); });
+    document.getElementById("cvOver").classList.remove("hide");
+    document.getElementById("goBtn").textContent="START";
+    document.getElementById("log").innerHTML="<p>shift reset. he is just standing there again.</p>";
+    ui();
+  }
+  document.getElementById("startBtn").addEventListener("click",start);
+  document.getElementById("goBtn").addEventListener("click",function(){
+    if(S.run){ S.run=false; this.textContent="RESUME"; log("break. the drops keep coming anyway."); }
+    else start();
+  });
+  document.getElementById("resetBtn").addEventListener("click",reset);
+  document.getElementById("winClose").addEventListener("click",function(){ document.getElementById("win").classList.remove("on"); });
+  document.getElementById("playSticker").addEventListener("click",function(){
+    setTimeout(function(){ if(!S.run&&!S.won) start(); },520);
+  });
+  ui();
+  window.__game=S;
+})();
+
+/* ============ victory coin rain ============ */
+function rainCoins(){
+  var r=document.getElementById("rain");
+  for(var i=0;i<70;i++){
+    (function(k){
+      setTimeout(function(){
+        var d=document.createElement("div"); d.className="coin"+(Math.random()<.5?" bill":"");
+        d.textContent=Math.random()<.5?"$":"◆";
+        var px=Math.random()*window.innerWidth;
+        d.style.left=px+"px"; d.style.top="-30px"; d.style.position="fixed"; r.appendChild(d);
+        var vy=2+Math.random()*4, rot=(Math.random()-.5)*20, n=0, cy=-30;
+        (function stp(){
+          n++; vy+=.16; cy+=vy;
+          d.style.transform="translateY("+(cy+30)+"px) rotate("+(n*rot)+"deg)";
+          if(cy>window.innerHeight+60){ d.remove(); return; }
+          requestAnimationFrame(stp);
+        })();
+      }, k*42);
+    })(i);
+  }
+}
+</script>
+</body>
+</html>
